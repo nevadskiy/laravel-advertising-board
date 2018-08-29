@@ -1,9 +1,58 @@
-version: '2'
+version: '3'
+
 services:
+
+  # App server
+  nginx:
+    build:
+      context: docker/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www
+      # Storing logs
+      - ./docker/nginx/logs:/var/log/nginx
+    ports:
+      - 8080:80
+    depends_on:
+      - php-fpm
+
+  # PHP FastCGI Process Manager
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www
+    # Overriding .env variables
+    # to access another containers from inside of this one
+    environment:
+      - DB_PORT=3306
+      - DB_HOST=mysql
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis
+    depends_on:
+      - mysql
+      - redis
+
+  # The database
   mysql:
     image: mysql:5.7
+    # Directory that will pass through container
+    volumes:
+      - ./docker/mysql/volume:/var/lib/mysql
     environment:
-      - "MYSQL_ROOT_PASSWORD=secret"
-      - "MYSQL_USER=app"
-      - "MYSQL_PASSWORD=secret"
-      - "MYSQL_DATABASE=app"
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=secret
+      - MYSQL_DATABASE=app
+    # For accessing from outside of container
+    # Inside other containers it linked by url with name of service
+    # Example: http://database - link to database container
+    ports:
+      - 33061:3306
+
+  # Redis server
+  redis:
+    image: redis:3.0
+    ports:
+      - 63791:6379
