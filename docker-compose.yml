@@ -10,21 +10,24 @@ services:
       - ./:/var/www
       # Storing logs
       - ./docker/nginx/logs:/var/log/nginx
+      # SSL
+      - ./docker/nginx/ssl:/etc/nginx/ssl
     ports:
-      - 8080:80
+      - 8080:443
     depends_on:
       - php-fpm
 
   # PHP FastCGI Process Manager
   php-fpm:
     build:
-      context: ./docker/php-fpm
+      context: docker/php-fpm
       dockerfile: Dockerfile
     volumes:
       - ./:/var/www
     # Overriding .env variables
     # to access another containers from inside of this one
     environment:
+      - DB_CONNECTION=mysql
       - DB_PORT=3306
       - DB_HOST=mysql
       - REDIS_PORT=6379
@@ -32,6 +35,26 @@ services:
     depends_on:
       - mysql
       - redis
+
+  php-cli:
+    build:
+      context: docker/php-cli
+      dockerfile: Dockerfile
+    volumes:
+    - ./:/var/www
+    # Overriding .env variables
+    # to access another containers from inside of this one
+    environment:
+    - DB_CONNECTION=mysql
+    - DB_PORT=3306
+    - DB_HOST=mysql
+    - REDIS_PORT=6379
+    - REDIS_HOST=redis
+    depends_on:
+    - mysql
+    - redis
+    # Do not down CLI after run
+    tty: true
 
   # The database
   mysql:
@@ -55,3 +78,13 @@ services:
     image: redis:3.0
     ports:
       - 63791:6379
+
+  # Node (For assets compiling)
+  node:
+    build:
+      context: docker/node
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www
+    # Do not down CLI after run
+    tty: true
