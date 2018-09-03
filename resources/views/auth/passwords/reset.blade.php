@@ -6,7 +6,6 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Reset Password') }}</div>
-
                 <div class="card-body">
                     <form method="POST" action="{{ route('password.request') }}" aria-label="{{ __('Reset Password') }}">
                         @csrf
