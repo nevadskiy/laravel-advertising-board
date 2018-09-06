@@ -7,7 +7,7 @@
 
     @if (session($key))
         <div class="alert alert-{{ $class }}" role="alert">
-            {{ session($type) }}
+            {{ session($key) }}
         </div>
     @endif
 

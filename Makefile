@@ -7,6 +7,9 @@ docker-down:
 docker-build:
 	docker-compose up --build -d
 
+migrate:
+	docker-compose exec php-cli php artisan migrate
+
 test:
 	@docker-compose exec php-cli vendor/bin/phpunit
 
