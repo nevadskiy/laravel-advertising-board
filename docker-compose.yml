@@ -52,6 +52,7 @@ services:
     - REDIS_HOST=redis
     depends_on:
     - mysql
+    - mysql-testing
     - redis
     # Do not down CLI after run
     tty: true
@@ -72,6 +73,22 @@ services:
     # Example: http://database - link to database container
     ports:
       - 33061:3306
+
+  mysql-testing:
+    image: mysql:5.7
+    # Directory that will pass through container
+    volumes:
+    - ./docker/mysql-testing/volume:/var/lib/mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=secret
+    - MYSQL_USER=app
+    - MYSQL_PASSWORD=secret
+    - MYSQL_DATABASE=app
+    # For accessing from outside of container
+    # Inside other containers it linked by url with name of service
+    # Example: http://database - link to database container
+    ports:
+    - 33062:3306
 
   # Redis server
   redis:

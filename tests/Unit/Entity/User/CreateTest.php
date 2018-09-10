@@ -25,5 +25,6 @@ class CreateTest extends TestCase
         $this->assertNotEmpty($user->password);
 
         $this->assertTrue($user->isActive());
+        $this->assertFalse($user->isAdmin());
     }
 }

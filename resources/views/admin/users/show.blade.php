@@ -12,6 +12,7 @@
                     <button class="btn btn-success">Verify</button>
                 </form>
             @endif
+
             <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="mr-1">
                 @csrf
                 @method('DELETE')
@@ -31,12 +32,22 @@
                 <th>Email</th><td>{{ $user->email }}</td>
             </tr>
             <tr>
-                <th>Status </th>
+                <th>Status</th>
                 <td>
                     @if ($user->isWait())
                         <span class="badge badge-secondary">Waiting</span>
                     @elseif ($user->isActive())
                         <span class="badge badge-primary">Active</span>
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>
+                    @if ($user->isAdmin())
+                        <span class="badge badge-primary">Admin</span>
+                    @else
+                        <span class="badge badge-secondary">User</span>
                     @endif
                 </td>
             </tr>

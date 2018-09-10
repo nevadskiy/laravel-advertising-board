@@ -43,7 +43,6 @@ class RegisterController extends Controller
                 ->with('success', 'Your email address is verified. You can now login.');
 
         } catch (\DomainException $e) {
-
             return redirect()->route('login')->with('error', $e->getMessage());
         }
     }

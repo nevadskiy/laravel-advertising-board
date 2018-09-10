@@ -29,6 +29,7 @@ class RegisterTest extends TestCase
 
         $this->assertTrue($user->isWait());
         $this->assertFalse($user->isActive());
+        $this->assertFalse($user->isAdmin());
     }
 
     /** @test */
@@ -45,7 +46,7 @@ class RegisterTest extends TestCase
     /** @test */
     public function it_expects_already_verified()
     {
-        $user = User::register('name1', 'email', 'password');
+        $user = User::register('name', 'email', 'password');
 
         $user->verify();
 
