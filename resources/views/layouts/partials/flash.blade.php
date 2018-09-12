@@ -3,7 +3,7 @@
     'success' => 'success',
     'info'    => 'info',
     'error'   => 'danger'
-] as $key    => $class)
+] as $key     => $class)
 
     @if (session($key))
         <div class="alert alert-{{ $class }}" role="alert">

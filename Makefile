@@ -26,6 +26,8 @@ assets-watch:
 	docker-compose exec node yarn watch
 
 perm:
+	sudo chmod -R 777 bootstrap/cache
+	sudo chmod -R 777 storage
 	sudo chown ${USER}:${USER} bootstrap/cache -R
 	sudo chown ${USER}:${USER} storage -R
 #	if [-d "node_modules"]; then sudo chown ${USER}:${USER} node_modules -R; fi

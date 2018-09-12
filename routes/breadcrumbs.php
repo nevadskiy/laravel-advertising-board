@@ -35,9 +35,32 @@ Breadcrumbs::for('password.reset', function ($trail) {
     $trail->push('Reset password', route('password.reset'));
 });
 
-Breadcrumbs::for('cabinet', function ($trail) {
+Breadcrumbs::for('cabinet.home', function ($trail) {
     $trail->parent('home');
-    $trail->push('Cabinet', route('cabinet'));
+    $trail->push('Cabinet', route('cabinet.home'));
+});
+
+Breadcrumbs::for('cabinet.profile.home', function ($trail) {
+    $trail->parent('cabinet.home');
+    $trail->push('Profile', route('cabinet.profile.home'));
+});
+
+Breadcrumbs::for('cabinet.profile.edit', function ($trail) {
+    $trail->parent('cabinet.profile.home');
+    $trail->push('Edit', route('cabinet.profile.edit'));
+});
+
+Breadcrumbs::for('cabinet.profile.phone', function ($trail) {
+    $trail->parent('cabinet.profile.home');
+    $trail->push('Phone', route('cabinet.profile.phone'));
+});
+
+/**
+ * Cabinet Adverts
+ */
+Breadcrumbs::for('cabinet.adverts.index', function ($trail) {
+    $trail->parent('cabinet.home');
+    $trail->push('Adverts', route('cabinet.adverts.index'));
 });
 
 /**
