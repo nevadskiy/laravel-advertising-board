@@ -25,7 +25,8 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt(env('ADMIN_PASSWORD', 'admin')),
             'role' => User::ROLE_ADMIN,
             'status' => User::STATUS_ACTIVE,
-            'verify_token' => null
+            'phone_verified' => true,
+            'phone_auth' => false
         ]);
     }
 }

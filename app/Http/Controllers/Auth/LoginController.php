@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Requests\Auth\LoginRequest;
+use App\Services\Sms\SmsSender;
 use Auth;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use App\Http\Controllers\Controller;
@@ -15,9 +16,15 @@ class LoginController extends Controller
 {
     use ThrottlesLogins;
 
-    public function __construct()
+    /**
+     * @var SmsSender
+     */
+    private $sms;
+
+    public function __construct(SmsSender $sms)
     {
         $this->middleware('guest')->except('logout');
+        $this->sms = $sms;
     }
 
     public function showLoginForm()

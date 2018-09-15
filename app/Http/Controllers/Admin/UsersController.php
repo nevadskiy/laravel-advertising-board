@@ -42,10 +42,7 @@ class UsersController extends Controller
             User::STATUS_WAIT => 'Wait'
         ];
 
-        $roles = [
-            User::ROLE_ADMIN => 'Admin',
-            User::ROLE_USER => 'User'
-        ];
+        $roles = User::rolesList();
 
         return view('admin.users.index', compact('users', 'statuses', 'roles'));
     }
@@ -72,10 +69,7 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        $roles = [
-            User::ROLE_ADMIN => 'Admin',
-            User::ROLE_USER => 'User'
-        ];
+        $roles = User::rolesList();
 
         return view('admin.users.edit', compact('user', 'roles'));
     }

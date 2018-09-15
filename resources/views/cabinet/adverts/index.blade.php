@@ -7,5 +7,11 @@
             <li class="nav-item"><a href="{{ route('cabinet.adverts.index') }}" class="nav-link active">Adverts</a></li>
             <li class="nav-item"><a href="{{ route('cabinet.profile.home') }}" class="nav-link">Profile</a></li>
         </ul>
+
+        <div
+                class="region-selector"
+                data-selected="{{ json_encode((array)old('regions')) }}"
+                data-source="{{ route('ajax.regions') }}"
+        ></div>
     </div>
 @endsection

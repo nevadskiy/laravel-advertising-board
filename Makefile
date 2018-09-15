@@ -1,7 +1,7 @@
-docker-up:
+up:
 	docker-compose up -d
 
-docker-down:
+down:
 	docker-compose down
 
 docker-build:
@@ -22,7 +22,7 @@ assets-install:
 assets-dev:
 	docker-compose exec node yarn dev
 
-assets-watch:
+watch:
 	docker-compose exec node yarn watch
 
 perm:

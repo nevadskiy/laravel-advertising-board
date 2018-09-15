@@ -31,12 +31,15 @@ class Category extends Model
         return $this->hasMany(Attribute::class, 'category_id', 'id');
     }
 
-    public function parentAttributes(): Collection
+    public function parentAttributes()
     {
         return $this->parent ? $this->parent->allAttributes() : collect([]);
     }
 
-    public function allAttributes(): Collection
+    /**
+     * @return Attribute[]
+     */
+    public function allAttributes()
     {
         return $this->parentAttributes()->merge($this->attributes()->orderBy('sort')->get());
     }

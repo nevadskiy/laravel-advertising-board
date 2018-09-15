@@ -20,6 +20,11 @@ Breadcrumbs::for('login', function ($trail) {
     $trail->push('Login', route('login'));
 });
 
+Breadcrumbs::for('login.phone', function ($trail) {
+    $trail->parent('login');
+    $trail->push('Verification', route('login.phone'));
+});
+
 Breadcrumbs::for('register', function ($trail) {
     $trail->parent('home');
     $trail->push('Register', route('register'));
