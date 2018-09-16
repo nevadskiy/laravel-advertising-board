@@ -29,24 +29,24 @@
             </div>
         @endcan
 
-        @can('moderate-advert', $advert)
-            <div class="d-flex flex-row mb-3">
-                <a href="{{ route('admin.adverts.edit', $advert) }}" class="btn btn-primary mr-1">Edit</a>
-                <a href="{{ route('admin.adverts.photos', $advert) }}" class="btn btn-primary mr-1">Photos</a>
-                <form method="POST" action="{{ route('admin.adverts.moderate', $advert) }}" class="mr-1">
-                    @csrf
-                    <button class="btn btn-success">Publish</button>
-                </form>
+        {{--@can('moderate-advert', $advert)--}}
+            {{--<div class="d-flex flex-row mb-3">--}}
+                {{--<a href="{{ route('cabinet.adverts.edit', $advert) }}" class="btn btn-primary mr-1">Edit</a>--}}
+                {{--<a href="{{ route('cabinet.adverts.photos', $advert) }}" class="btn btn-primary mr-1">Photos</a>--}}
+                {{--<form method="POST" action="{{ route('cabinet.adverts.moderate', $advert) }}" class="mr-1">--}}
+                    {{--@csrf--}}
+                    {{--<button class="btn btn-success">Publish</button>--}}
+                {{--</form>--}}
 
-                <a href="{{ route('admin.adverts.reject', $advert) }}" class="btn btn-danger mr-1">Reject</a>
+                {{--<a href="{{ route('admin.adverts.reject', $advert) }}" class="btn btn-danger mr-1">Reject</a>--}}
 
-                <form method="POST" action="{{ route('admin.adverts.destroy', $advert) }}" class="mr-1">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-        @endcan
+                {{--<form method="POST" action="{{ route('admin.adverts.destroy', $advert) }}" class="mr-1">--}}
+                    {{--@csrf--}}
+                    {{--@method('DELETE')--}}
+                    {{--<button class="btn btn-danger">Delete</button>--}}
+                {{--</form>--}}
+            {{--</div>--}}
+        {{--@endcan--}}
 
         <div class="row">
             <div class="col-md-9">

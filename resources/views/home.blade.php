@@ -36,7 +36,7 @@
                         <div class="list-unstyled">
                             @foreach ($chunk as $current)
                                 <li>
-                                    <a href="{{ route('adverts.index', [null, $current]) }}">
+                                    <a href="{{ route('adverts.index', [$current, null]) }}">
                                         {{ $current->name }}
                                     </a>
                                 </li>

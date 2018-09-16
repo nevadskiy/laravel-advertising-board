@@ -6,7 +6,7 @@ use App\Entity\Region;
 use App\Entity\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @property int $id
@@ -47,12 +47,12 @@ class Advert extends Model
 
     public function category()
     {
-        $this->belongsTo(Category::class, 'category_id', 'id');
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
     public function region()
     {
-        $this->belongsTo(Region::class, 'region_id ', 'id');
+        return $this->belongsTo(Region::class, 'region_id', 'id');
     }
 
     public function values()
@@ -123,5 +123,20 @@ class Advert extends Model
             'category_id',
             array_merge([$category->id], $category->descendants()->pluck('id')->toArray())
         );
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('status', self::STATUS_ACTIVE);
+    }
+
+    public function isActive()
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    public function isDraft()
+    {
+        return $this->status === self::STATUS_DRAFT;
     }
 }

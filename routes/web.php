@@ -9,6 +9,18 @@ Route::post('login/verify', 'Auth\LoginController@verify');
 /** Home */
 Route::get('/', 'HomeController@index')->name('home');
 
+Route::group([
+    'prefix' => 'adverts',
+    'as' => 'adverts.',
+    'namespace' => 'Adverts'
+], function () {
+    Route::get('show/{advert}', 'AdvertController@show')->name('show');
+    Route::post('show/{advert}/phone', 'AdvertController@phone')->name('phone');
+
+    // TODO: work only if region exists
+    Route::get('{region?}/{category?}', 'AdvertController@index')->name('index');
+});
+
 /** Cabinet */
 Route::group([
     'prefix' => 'cabinet',
@@ -31,7 +43,25 @@ Route::group([
         Route::post('phone/auth', 'PhoneController@auth')->name('phone.auth');
     });
 
-    Route::resource('adverts', 'Adverts\AdvertController');
+    Route::group([
+        'prefix' => 'adverts',
+        'as' => 'adverts.',
+        'namespace' => 'Adverts',
+        'middleware' => App\Http\Middleware\FilledProfileOnly::class,
+    ], function () {
+        Route::get('/', 'AdvertController@index')->name('index');
+        Route::get('/create', 'CreateController@category')->name('create');
+        Route::get('/create/region/{category}/{region?}', 'CreateController@region')->name('create.region');
+        Route::get('/create/advert/{category}/{region?}', 'CreateController@advert')->name('create.advert');
+        Route::post('/create/region/{category}/{region?}', 'CreateController@store')->name('create.advert.store');
+
+        Route::get('{advert}/edit', 'ManageController@edit')->name('edit');
+        Route::put('{advert}/edit', 'ManageController@update')->name('update');
+        Route::get('{advert}/photos', 'ManageController@photos')->name('photos');
+        Route::post('{advert}/photos', 'ManageController@photos');
+        Route::post('{advert}/send', 'ManageController@send')->name('send');
+        Route::delete('{advert}/destroy', 'ManageController@destroy')->name('destroy');
+    });;
 });
 
 

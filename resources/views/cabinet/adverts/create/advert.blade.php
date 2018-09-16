@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    @include('cabinet._nav')
+
     <div class="container">
         <form method="POST" action="{{ route('cabinet.adverts.create.advert.store', [$category, $region]) }}">
             @csrf
@@ -48,7 +50,7 @@
                         <input
                                 id="address"
                                 class="form-control{{ $errors->has('address') ? ' is-invalid' : '' }}"
-                                type="number"
+                                type="text"
                                 name="address"
                                 value="{{ old('address', $region->getAddress()) }}"
                                 required

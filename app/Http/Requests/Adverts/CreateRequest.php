@@ -19,7 +19,7 @@ class CreateRequest extends FormRequest
         // $this - request context
         // $request->category - route binding
 
-        foreach ($this->category->allAtributes() as $attribute) {
+        foreach ($this->category->allAttributes() as $attribute) {
             $rules = [
                 $attribute->required ? 'required' : 'nullable'
             ];

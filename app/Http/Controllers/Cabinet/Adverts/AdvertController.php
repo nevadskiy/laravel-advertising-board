@@ -16,7 +16,7 @@ class AdvertController extends Controller
 
     public function index()
     {
-        $adverts = Advert::forUser(Auth::id())->orderByDesc('id')->paginate(20);
+        $adverts = Advert::forUser(Auth::user())->orderByDesc('id')->paginate(20);
 
         return view('cabinet.adverts.index', compact('adverts'));
     }

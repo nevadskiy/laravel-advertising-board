@@ -7,7 +7,7 @@ use App\Entity\Region;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\FilledProfileOnly;
 use App\Http\Requests\Adverts\CreateRequest;
-use App\Services\Auth\AdvertService;
+use App\Services\Adverts\AdvertService;
 use Auth;
 
 class CreateController extends Controller
@@ -31,7 +31,7 @@ class CreateController extends Controller
     {
         $regions = Region::where('parent_id', $region ? $region->id : null)->orderBy('name')->get();
 
-        return view('cabinet.adverts.create.category', compact('category', 'region', 'regions'));
+        return view('cabinet.adverts.create.region', compact('category', 'region', 'regions'));
     }
 
     public function advert(Category $category, Region $region = null)

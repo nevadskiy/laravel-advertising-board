@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    @include('cabinet._nav')
+
     <div class="container">
         @if ($region)
             <p>

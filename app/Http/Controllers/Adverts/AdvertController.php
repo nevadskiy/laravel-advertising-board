@@ -7,7 +7,6 @@ use App\Entity\Adverts\Category;
 use App\Entity\Region;
 use App\Http\Controllers\Controller;
 use Gate;
-use Illuminate\Http\Request;
 
 class AdvertController extends Controller
 {
@@ -38,7 +37,7 @@ class AdvertController extends Controller
 
     public function show(Advert $advert)
     {
-        if (!$advert->isActive() || !Gate::allows('show-advert', $advert)) {
+        if (!($advert->isActive() || Gate::allows('show-advert', $advert))) {
             abort(403);
         }
 

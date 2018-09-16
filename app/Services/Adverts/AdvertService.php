@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Auth;
+namespace App\Services\Adverts;
 
 use App\Entity\Adverts\Advert;
 use App\Entity\Adverts\Category;
