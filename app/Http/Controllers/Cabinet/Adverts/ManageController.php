@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\FilledProfileOnly;
 use App\Http\Requests\Adverts\AttributeRequest;
 use App\Http\Requests\Adverts\PhotosRequest;
-use App\Services\Auth\AdvertService;
+use App\Services\Adverts\AdvertService;
 
 class ManageController extends Controller
 {

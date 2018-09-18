@@ -5,6 +5,7 @@ use App\Entity\Adverts\Attribute;
 use App\Entity\Adverts\Category;
 use App\Entity\Region;
 use App\Entity\User;
+use App\Router\AdvertPath;
 
 /**
  * Home
@@ -77,52 +78,53 @@ Breadcrumbs::for('cabinet.adverts.create', function ($trail) {
     $trail->push('Create', route('cabinet.adverts.create'));
 });
 
-Breadcrumbs::for('cabinet.adverts.create.region', function ($trail, Category $category, Region $region = null) {
+Breadcrumbs::for('cabinet.adverts.create.region', function ($trail, AdvertPath $path) {
     $trail->parent('cabinet.adverts.create');
-    $trail->push($category->name, route('cabinet.adverts.create.region', [$category, $region]));
+    $trail->push($path->category->name, route('cabinet.adverts.create.region', $path));
 });
 
-Breadcrumbs::for('cabinet.adverts.create.advert', function ($trail, Category $category, Region $region = null) {
-    $trail->parent('cabinet.adverts.create.region', $category, $region);
-    $trail->push($region ? $region->name : 'All', route('cabinet.adverts.create.advert', [$category, $region]));
+Breadcrumbs::for('cabinet.adverts.create.advert', function ($trail, AdvertPath $path) {
+    $trail->parent('cabinet.adverts.create.region', $path);
+    $trail->push($path->region ? $path->region->name : 'All', route('cabinet.adverts.create.advert', $path));
 });
 
 /**
  * Adverts
  */
-Breadcrumbs::for('adverts.inner_region', function ($trail, Region $region = null, Category $category = null) {
-    if ($region && $parent = $region->parent) {
-        $trail->parent('adverts.inner_region', $parent, $category);
+Breadcrumbs::for('adverts.inner_region', function ($trail, AdvertPath $path) {
+    if ($path->region && $parent = $path->region->parent) {
+        $trail->parent('adverts.inner_region', $path->withRegion($parent));
     } else {
         $trail->parent('home');
         $trail->push('Adverts', route('adverts.index'));
     }
 
-    if ($region) {
-        $trail->push($region->name, route('adverts.index', $region, $category));
+    if ($path->region) {
+        $trail->push($path->region->name, route('adverts.index', $path));
     }
 });
 
-Breadcrumbs::for('adverts.inner_category', function ($trail, Region $region = null, Category $category = null) {
-    if ($category && $parent = $category->parent) {
-        $trail->parent('adverts.inner_category', $region, $parent);
+Breadcrumbs::for('adverts.inner_category', function ($trail, AdvertPath $path, AdvertPath $originalPath) {
+    if ($path->category && $parent = $path->category->parent) {
+        $trail->parent('adverts.inner_category', $path->withCategory($parent), $originalPath);
     } else {
-        $trail->parent('adverts.inner_region', $region, $category);
+        $trail->parent('adverts.inner_region', $originalPath);
     }
 
-    if ($category) {
-        $trail->push($category->name, route('adverts.index', $region, $category));
+    if ($path->category) {
+        $trail->push($path->category->name, route('adverts.index', $path));
     }
 });
 
-Breadcrumbs::for('adverts.index', function ($trail, Region $region = null, Category $category = null) {
-    $trail->parent('adverts.inner_category', $region, $category);
+Breadcrumbs::for('adverts.index', function ($trail, AdvertPath $path = null) {
+    $path = $path ?: advert_path(null, null);
+    $trail->parent('adverts.inner_category', $path, $path);
     // Final crumb so PUSH is not required
 });
 
 Breadcrumbs::for('adverts.show', function ($trail, Advert $advert) {
-    $trail->parent('adverts.index', $advert->region, $advert->category);
-    // Final crumb so PUSH is not required
+    $trail->parent('adverts.index', advert_path($advert->region, $advert->category));
+    $trail->push($advert->title, route('adverts.show', $advert));
 });
 
 /**

@@ -117,4 +117,10 @@ class AdvertService
         $advert = $this->getAdvert($id);
         $advert->delete();
     }
+
+    public function expire(Advert $advert)
+    {
+        $advert->expire();
+        // TODO: email
+    }
 }

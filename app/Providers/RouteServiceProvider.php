@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Entity\Region;
+use App\Router\AdvertPath;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -23,7 +25,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Route::model('advert_path', AdvertPath::class);
 
         parent::boot();
     }

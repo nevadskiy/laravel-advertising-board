@@ -43,4 +43,9 @@ class Category extends Model
     {
         return $this->parentAttributes()->merge($this->attributes()->orderBy('sort')->get());
     }
+
+    public function getPath()
+    {
+        return implode('/', array_merge($this->ancestors()->defaultOrder()->pluck('slug')->toArray(), [$this->slug]));
+    }
 }

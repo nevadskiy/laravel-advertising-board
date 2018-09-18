@@ -89,7 +89,7 @@ class Advert extends Model
         $this->update([
             'published_at' => $date,
             'expires_at' => $date->copy()->addDays(15),
-            'status' => self::STATUS_MODERATION,
+            'status' => self::STATUS_ACTIVE,
         ]);
     }
 
@@ -98,6 +98,13 @@ class Advert extends Model
         $this->update([
             'status' => self::STATUS_DRAFT,
             'reject_reason' => $reason
+        ]);
+    }
+
+    public function expire(): void
+    {
+        $this->update([
+            'status' => self::STATUS_CLOSED,
         ]);
     }
 
@@ -114,12 +121,12 @@ class Advert extends Model
             $ids = array_merge($ids, $childrenIds);
         }
 
-        return $query->where('region_id', $ids);
+        return $query->whereIn('region_id', $ids);
     }
 
     public function scopeForCategory(Builder $query, Category $category)
     {
-        return $query->where(
+        return $query->whereIn(
             'category_id',
             array_merge([$category->id], $category->descendants()->pluck('id')->toArray())
         );

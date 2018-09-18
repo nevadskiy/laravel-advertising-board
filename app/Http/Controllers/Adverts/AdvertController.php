@@ -6,19 +6,20 @@ use App\Entity\Adverts\Advert;
 use App\Entity\Adverts\Category;
 use App\Entity\Region;
 use App\Http\Controllers\Controller;
+use App\Router\AdvertPath;
 use Gate;
 
 class AdvertController extends Controller
 {
-    public function index(Region $region = null, Category $category = null)
+    public function index(AdvertPath $path)
     {
-        $query = Advert::active()->with(['category', 'region'])->orderByDesc('id');
+        $query = Advert::active()->with(['category', 'region'])->orderByDesc('published_at');
 
-        if ($category) {
+        if ($category = $path->category) {
             $query->forCategory($category);
         }
 
-        if ($region) {
+        if ($region = $path->region) {
             $query->forRegion($region);
         }
 

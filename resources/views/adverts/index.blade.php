@@ -20,7 +20,7 @@
                                 <div class="list-unstyled">
                                     @foreach ($chunk as $current)
                                         <li>
-                                            <a href="{{ route('adverts.index', [$region, $current]) }}">
+                                            <a href="{{ route('adverts.index', advert_path($region, $category)) }}">
                                                 {{ $current->name }}
                                             </a>
                                         </li>

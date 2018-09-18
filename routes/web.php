@@ -17,8 +17,7 @@ Route::group([
     Route::get('show/{advert}', 'AdvertController@show')->name('show');
     Route::post('show/{advert}/phone', 'AdvertController@phone')->name('phone');
 
-    // TODO: work only if region exists
-    Route::get('{region?}/{category?}', 'AdvertController@index')->name('index');
+    Route::get('{advert_path?}', 'AdvertController@index')->name('index')->where('advert_path', '.+');
 });
 
 /** Cabinet */

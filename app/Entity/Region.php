@@ -38,4 +38,9 @@ class Region extends Model
     {
         return $query->where('parent_id', null);
     }
+
+    public function getPath()
+    {
+        return ($this->parent ? $this->parent->getPath() . '/' : '') . $this->slug;
+    }
 }
