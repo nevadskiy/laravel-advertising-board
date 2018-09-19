@@ -4,6 +4,7 @@ namespace App\Router;
 
 use App\Entity\Adverts\Category;
 use App\Entity\Region;
+use Cache;
 use Illuminate\Contracts\Routing\UrlRoutable;
 
 class AdvertPath implements UrlRoutable
@@ -58,11 +59,17 @@ class AdvertPath implements UrlRoutable
         $segments = [];
 
         if ($this->region) {
-            $segments[] = $this->region->getPath();
+            $segments[] = Cache::tags(Region::class)
+                ->rememberForever('region:' . $this->region->id, function () {
+                    return $this->region->getPath();
+                });
         }
 
         if ($this->category) {
-            $segments[] = $this->category->getPath();
+            $segments[] = Cache::tags(Category::class)
+                ->rememberForever('category:' . $this->region->id, function () {
+                    return $this->category->getPath();
+                });
         }
 
         return implode('/', $segments);

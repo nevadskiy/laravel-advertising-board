@@ -66,6 +66,9 @@ class AdvertService
                     'file' => $file->store('adverts')
                 ]);
             }
+
+            // For touching updated_at attribute
+            $advert->update();
         });
     }
 
@@ -109,6 +112,9 @@ class AdvertService
                     ]);
                 }
             }
+
+            // For touching updated_at attribute
+            $advert->update();
         });
     }
 
