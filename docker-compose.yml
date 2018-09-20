@@ -14,7 +14,7 @@ services:
       - ./docker/nginx/ssl:/etc/nginx/ssl
     ports:
       - 8080:443
-    depends_on:
+    links:
       - php-fpm
 
   # PHP FastCGI Process Manager
@@ -32,8 +32,11 @@ services:
       - DB_HOST=mysql
       - REDIS_PORT=6379
       - REDIS_HOST=redis
-    depends_on:
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    links:
       - mysql
+      - elasticsearch
       - redis
 
   php-cli:
@@ -50,8 +53,11 @@ services:
     - DB_HOST=mysql
     - REDIS_PORT=6379
     - REDIS_HOST=redis
-    depends_on:
+    - ELASTICSEARCH_HOST=elasticsearch
+    - ELASTICSEARCH_PORT=9200
+    links:
     - mysql
+    - elasticsearch
     - redis
     # Do not down CLI after run
     tty: true
@@ -88,3 +94,20 @@ services:
       - ./:/var/www
     # Do not down CLI after run
     tty: true
+
+  # Elastic search
+  elasticsearch:
+    build:
+      context: docker/elasticsearch
+      dockerfile: Dockerfile
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./docker/elasticsearch/volume:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9200

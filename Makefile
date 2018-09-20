@@ -4,7 +4,7 @@ up:
 down:
 	docker-compose down
 
-docker-build:
+docker-build: memory
 	docker-compose up --build -d
 
 migrate:
@@ -16,14 +16,20 @@ db-refresh:
 test:
 	@docker-compose exec php-cli vendor/bin/phpunit
 
-assets-install:
+status:
+	docker-compose ps
+
+# Install node assets
+assets:
 	docker-compose exec node yarn install
 
-assets-dev:
-	docker-compose exec node yarn dev
-
+# Run front-end assets watch-builder
 watch:
 	docker-compose exec node yarn watch
+
+# Memory for virtual container (Elasticsearch depends on it)
+memory:
+	sudo sysctl -w vm.max_map_count=262144
 
 perm:
 	sudo chmod -R 777 bootstrap/cache
