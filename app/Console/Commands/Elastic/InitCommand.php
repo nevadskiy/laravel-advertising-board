@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Elastic;
 
+use App\Entity\Adverts\Advert;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Illuminate\Console\Command;
@@ -47,11 +48,29 @@ class InitCommand extends Command
     public function handle()
     {
         $this->removeCurrentIndic();
-
         $this->createIndic();
+        $this->seed();
     }
 
-    public function removeCurrentIndic(): void
+    protected function seed()
+    {
+        foreach (Advert::active()->orderBy('id')->cursor() as $advert) {
+            $this->client->index([
+                'index' => 'app',
+                'type' => 'adverts',
+                'id' => $advert->id,
+                'body' => [
+                    'id' => $advert->id,
+                    'published_at' => $advert->published_at ? $advert->published_at->format(DATE_ATOM) : null,
+                    'title' => $advert->title,
+                    'content' => $advert->content,
+                    'price' => $advert->price,
+                ],
+            ]);
+        }
+    }
+
+    protected function removeCurrentIndic(): void
     {
         try {
             $this->client->indices()->delete([
@@ -60,20 +79,51 @@ class InitCommand extends Command
         } catch (Missing404Exception $e) {}
     }
 
-    public function createIndic(): void
+    protected function createIndic(): void
     {
         $this->client->indices()->create([
             'index' => 'app',
+
             'body' => [
+                // Mapping table entities
+                // Can be skipped so elastic makes it for us
+                // But for master-control search behaviour should be set
                 'mappings' => [
                     'adverts' => [
+                        // Id data should returned ?? TODO: make it clear!
                         '_source' => [
                             'enabled' => true,
                         ],
+                        // Properties of doc 'adverts'
                         'properties' => [
                             'id' => [
+                                'type' => 'integer',
+                            ],
+                            'published_at' => [
+                                'type' => 'date',
+                            ],
+                            'title' => [
+                                'type' => 'text',
+                            ],
+                            'content' => [
+                                'type' => 'text'
+                            ],
+                            'price' => [
                                 'type' => 'integer'
-                            ]
+                            ],
+                            'status' => [
+                                // Do not use field for full-text searching instead of text
+                                // Search if equals (not %like%)
+                                'type' => 'keyword'
+                            ],
+                            'categories' => [
+                                // Array can be also assigned (so integer means type of array items)
+                                'type' => 'integer'
+                            ],
+                            'regions' => [
+                                // Array can be also assigned (so integer means type of array items)
+                                'type' => 'integer'
+                            ],
                         ]
                     ]
                 ]
