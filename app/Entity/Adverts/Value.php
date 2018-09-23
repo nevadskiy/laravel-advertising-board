@@ -11,4 +11,9 @@ class Value extends Model
     public $timestamps = false;
 
     protected $fillable = ['attribute_id', 'values'];
+
+    public function attribute()
+    {
+        return $this->belongsTo(Attribute::class, 'attribute_id', 'id');
+    }
 }

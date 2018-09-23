@@ -6,22 +6,37 @@ use App\Entity\Adverts\Advert;
 use App\Entity\Adverts\Category;
 use App\Entity\Region;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Adverts\SearchRequest;
 use App\Router\AdvertPath;
+use App\Services\Adverts\AdvertSearchService;
 use Gate;
 
 class AdvertController extends Controller
 {
-    public function index(AdvertPath $path)
+    /**
+     * @var AdvertSearchService
+     */
+    private $search;
+
+    public function __construct(AdvertSearchService $search)
     {
-        $query = Advert::active()->with(['category', 'region'])->orderByDesc('published_at');
+        $this->search = $search;
+    }
 
-        if ($category = $path->category) {
-            $query->forCategory($category);
-        }
+    public function index(SearchRequest $request, AdvertPath $path)
+    {
+//        $query = Advert::active()->with(['category', 'region'])->orderByDesc('published_at');
 
-        if ($region = $path->region) {
-            $query->forRegion($region);
-        }
+        $category = $path->category;
+        $region = $path->region;
+
+//        if ($category = $path->category) {
+//            $query->forCategory($category);
+//        }
+//
+//        if ($region = $path->region) {
+//            $query->forRegion($region);
+//        }
 
         $regions = $region
             ? $region->children()->orderBy('name')->getModels()
@@ -31,7 +46,9 @@ class AdvertController extends Controller
             ? $category->children()->defaultOrder()->getModels()
             : Category::whereIsRoot()->defaultOrder()->getModels();
 
-        $adverts = $query->paginate(20);
+//        $adverts = $query->paginate(20);
+
+        $adverts = $this->search->search($category, $region, $request, 20, $request->get('page', 1));
 
         return view('adverts.index', compact('category', 'region', 'categories', 'regions', 'adverts'));
     }
