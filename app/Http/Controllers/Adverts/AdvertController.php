@@ -25,18 +25,10 @@ class AdvertController extends Controller
 
     public function index(SearchRequest $request, AdvertPath $path)
     {
-//        $query = Advert::active()->with(['category', 'region'])->orderByDesc('published_at');
-
         $category = $path->category;
         $region = $path->region;
 
-//        if ($category = $path->category) {
-//            $query->forCategory($category);
-//        }
-//
-//        if ($region = $path->region) {
-//            $query->forRegion($region);
-//        }
+        // TODO: get only categories & regions those has counts from elastic result
 
         $regions = $region
             ? $region->children()->orderBy('name')->getModels()
@@ -46,11 +38,20 @@ class AdvertController extends Controller
             ? $category->children()->defaultOrder()->getModels()
             : Category::whereIsRoot()->defaultOrder()->getModels();
 
-//        $adverts = $query->paginate(20);
+        $result = $this->search->search($category, $region, $request, 20, $request->get('page', 1));
 
-        $adverts = $this->search->search($category, $region, $request, 20, $request->get('page', 1));
+//        dd($result);
 
-        return view('adverts.index', compact('category', 'region', 'categories', 'regions', 'adverts'));
+        $adverts = $result->adverts;
+        $categoriesCounts = $result->categoriesCounts;
+        $regionsCounts = $result->regionsCounts;
+
+        return view('adverts.index', compact(
+            'category', 'region',
+            'categories', 'regions',
+            'categoriesCounts', 'regionsCounts',
+            'adverts'
+        ));
     }
 
     public function show(Advert $advert)

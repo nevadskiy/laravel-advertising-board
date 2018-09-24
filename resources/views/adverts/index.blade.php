@@ -20,9 +20,10 @@
                                 <div class="list-unstyled">
                                     @foreach ($chunk as $current)
                                         <li>
-                                            <a href="{{ route('adverts.index', advert_path($region, $category)) }}">
+                                            <a href="{{ route('adverts.index', array_merge(['advert_path' => advert_path($region, $category)], request()->all())) }}">
                                                 {{ $current->name }}
                                             </a>
+                                            ({{ $categoriesCounts[$current->id] ?? 0 }})
                                         </li>
                                     @endforeach
                                 </div>
@@ -49,9 +50,10 @@
                                 <div class="list-unstyled">
                                     @foreach ($chunk as $current)
                                         <li>
-                                            <a href="{{ route('adverts.index', [$current, $category]) }}">
+                                            <a href="{{ route('adverts.index', array_merge(['advert_path' => advert_path($region, $category)], request()->all())) }}">
                                                 {{ $current->name }}
                                             </a>
+                                            ({{ $regionsCounts[$current->id] ?? 0 }})
                                         </li>
                                     @endforeach
                                 </div>

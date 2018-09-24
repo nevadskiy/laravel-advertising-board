@@ -7,7 +7,6 @@ use App\Entity\Adverts\Category;
 use App\Entity\Region;
 use App\Http\Requests\Adverts\SearchRequest;
 use Elasticsearch\Client;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class AdvertSearchService
@@ -33,7 +32,7 @@ class AdvertSearchService
      * @param SearchRequest $request
      * @param int $perPage
      * @param int $currentPage
-     * @return Paginator
+     * @return SearchResult
      */
     public function search(
         ?Category $category,
@@ -41,13 +40,13 @@ class AdvertSearchService
         SearchRequest $request,
         int $perPage,
         int $currentPage
-    ): Paginator
+    ): SearchResult
     {
-        $values = array_filter((array)$request->get('attrs', function ($value) {
+        $values = array_filter((array)$request->get('attrs'), function ($value) {
             return !empty($value['equals']) || !empty($value['from']) || !empty($value['to']);
-        }));
+        });
 
-        $response = $this->client->search([
+        $request = [
             'index' => 'app',
             'type' => 'adverts',
             'body' => [
@@ -60,13 +59,27 @@ class AdvertSearchService
                     ['published_at' => ['order' => 'desc']],
                 ] : [],
 
+                // Aggregations (faceted groups)
+                'aggs' => [
+                    'group_by_region' => [
+                        'terms' => [
+                            'field' => 'regions',
+                        ],
+                    ],
+                    'group_by_category' => [
+                        'terms' => [
+                            'field' => 'categories',
+                        ],
+                    ]
+                ],
+
                 // Querying
                 'query' => [
                     // Array filter removes 'false' values
                     'bool' => [
                         // Must means that all params are required for search
                         // If one of them will return no results, so it applies for all fields
-                        'must' => array_filter([
+                        'must' => array_values(array_filter([
                             // term means: equals string
                             ['term' => ['status' => Advert::STATUS_ACTIVE]],
                             $category ? ['term' => ['categories' => $category->id]] : false,
@@ -96,31 +109,37 @@ class AdvertSearchService
                                                 ['match' => ['values.attribute' => $id]],
                                                 !empty($value['equals']) ? ['match' => ['values.value_string' => $value['equals']]] : false,
                                                 !empty($value['from']) ? ['range' => ['values.value_number' => ['gte' => $value['from']]]] :
-                                                !empty($value['to']) ? ['range' => ['values.value_number' => ['lte' => $value['to']]]] : false,
+                                                    !empty($value['to']) ? ['range' => ['values.value_number' => ['lte' => $value['to']]]] : false,
                                             ])),
                                         ],
                                     ]
                                 ];
                             }, $values, array_keys($values))
-                        ]),
+                        ])),
                     ],
                 ],
             ],
-        ]);
+        ];
+
+         $response = $this->client->search($request);
 
         // Pluck all found result ids
         $ids = array_column($response['hits']['hits'], '_id');
 
-        if (!$ids) {
-            return new LengthAwarePaginator([], 0, $perPage, $currentPage);
+        $regionsCounts = array_column($response['aggregations']['group_by_region']['buckets'], 'doc_count', 'key');
+        $categoriesCounts = array_column($response['aggregations']['group_by_category']['buckets'], 'doc_count', 'key');
+
+        if ($ids) {
+            $items = Advert::active()
+                ->with(['category', 'region'])
+                ->whereIn('id', $ids)
+                ->orderBy(\DB::raw('FIELD(id,' . implode(',', $ids) . ')'))
+                ->get();
+            $paginator = new LengthAwarePaginator($items, $response['hits']['total'], $perPage, $currentPage);
+        } else {
+            $paginator = new LengthAwarePaginator([], 0, $perPage, $currentPage);
         }
 
-        $items = Advert::active()
-            ->with(['category', 'region'])
-            ->whereIn('id', $ids)
-            ->orderBy(\DB::raw('FIELD(id,' . implode(',', $ids) . ')'))
-            ->get();
-
-        return new LengthAwarePaginator($items, $response['hits']['total'], $perPage, $currentPage);
+        return new SearchResult($paginator, $regionsCounts, $categoriesCounts);
     }
 }
