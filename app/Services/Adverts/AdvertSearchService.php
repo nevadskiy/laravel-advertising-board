@@ -8,6 +8,7 @@ use App\Entity\Region;
 use App\Http\Requests\Adverts\SearchRequest;
 use Elasticsearch\Client;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class AdvertSearchService
 {
@@ -16,11 +17,24 @@ class AdvertSearchService
      */
     private $client;
 
+    /**
+     * AdvertSearchService constructor.
+     * @param Client $client
+     */
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
+    /**
+     * TODO: refactor
+     * @param Category|null $category
+     * @param Region|null $region
+     * @param SearchRequest $request
+     * @param int $perPage
+     * @param int $currentPage
+     * @return Paginator
+     */
     public function search(
         ?Category $category,
         ?Region $region,
@@ -29,6 +43,10 @@ class AdvertSearchService
         int $currentPage
     ): Paginator
     {
+        $values = array_filter((array)$request->get('attrs', function ($value) {
+            return !empty($value['equals']) || !empty($value['from']) || !empty($value['to']);
+        }));
+
         $response = $this->client->search([
             'index' => 'app',
             'type' => 'adverts',
@@ -38,32 +56,71 @@ class AdvertSearchService
                 // Paginating
                 'from' => ($currentPage - 1) * $perPage,
                 'size' => $perPage,
+                'sort' => !empty($request['text']) ? [
+                    ['published_at' => ['order' => 'desc']],
+                ] : [],
 
                 // Querying
                 'query' => [
+                    // Array filter removes 'false' values
                     'bool' => [
-                        // equals string
-                        ['term' => ['status' => Advert::STATUS_ACTIVE]],
-                        ['term' => ['categories' => $category->id]],
-                        ['term' => ['regions' => $region->id]],
+                        // Must means that all params are required for search
+                        // If one of them will return no results, so it applies for all fields
+                        'must' => array_filter([
+                            // term means: equals string
+                            ['term' => ['status' => Advert::STATUS_ACTIVE]],
+                            $category ? ['term' => ['categories' => $category->id]] : false,
+                            $region ? ['term' => ['regions' => $region->id]] : false,
 
-                    ]
+                            // Multimatch (search inside multiple fields)
+                            !empty($request->text) ? ['multi_match' => [
+                                'query' => $request->text,
+                                // Search inside fields given
+                                // Title weight is x3, content is default weight x1
+                                'fields' => ['title^3', 'content']
+                            ]] : false,
+
+                            // Nested search params (can be multiple definitions)
+
+                            // Trick to pass KEY inside array map:
+                            // First array must be target array, second array - keys array of target array
+                            // Example:
+                            // array_map(function($value, $key) {}, $array, array_keys($values))
+                            array_map(function ($value, $id) {
+                                return [
+                                    'nested' => [
+                                        'path' => 'values',
+                                        'bool' => [
+                                            // Filtering empty attributes and reset indexes with array_values for json_encode
+                                            'must' => array_values(array_filter([
+                                                ['match' => ['values.attribute' => $id]],
+                                                !empty($value['equals']) ? ['match' => ['values.value_string' => $value['equals']]] : false,
+                                                !empty($value['from']) ? ['range' => ['values.value_number' => ['gte' => $value['from']]]] :
+                                                !empty($value['to']) ? ['range' => ['values.value_number' => ['lte' => $value['to']]]] : false,
+                                            ])),
+                                        ],
+                                    ]
+                                ];
+                            }, $values, array_keys($values))
+                        ]),
+                    ],
                 ],
-
-                // Sort found result array (weight of item)
-                // 'sort' => [
-                // ['published_at' => ['order' => 'desc']]
-                // ]
-            ]
+            ],
         ]);
 
         // Pluck all found result ids
         $ids = array_column($response['hits']['hits'], '_id');
 
+        if (!$ids) {
+            return new LengthAwarePaginator([], 0, $perPage, $currentPage);
+        }
+
         $items = Advert::active()
             ->with(['category', 'region'])
             ->whereIn('id', $ids)
-            ->orderBy('FIELD(id,' . implode(',', $ids) .')')
+            ->orderBy(\DB::raw('FIELD(id,' . implode(',', $ids) . ')'))
             ->get();
+
+        return new LengthAwarePaginator($items, $response['hits']['total'], $perPage, $currentPage);
     }
 }
