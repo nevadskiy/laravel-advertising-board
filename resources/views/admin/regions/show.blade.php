@@ -4,9 +4,9 @@
     <div class="container">
         @include('admin.regions._nav')
 
-        <div class="d-flex flew-row mb-3">
+        <div class="d-flex flex-row mb-3">
             <a href="{{ route('admin.regions.edit', $region) }}" class="btn btn-primary mr-1">Edit</a>
-            <form action="{{ route('admin.regions.destroy', $region) }}" method="POST" class="mr-1">
+            <form method="POST" action="{{ route('admin.regions.update', $region) }}" class="mr-1">
                 @csrf
                 @method('DELETE')
                 <button class="btn btn-danger">Delete</button>
@@ -16,24 +16,19 @@
         <table class="table table-bordered table-striped">
             <tbody>
             <tr>
-                <th>ID</th>
-                <td>{{ $region->id }}</td>
+                <th>ID</th><td>{{ $region->id }}</td>
             </tr>
             <tr>
-                <th>Name</th>
-                <td>{{ $region->name }}</td>
+                <th>Name</th><td>{{ $region->name }}</td>
             </tr>
             <tr>
-                <th>Slug</th>
-                <td>{{ $region->slug }}</td>
+                <th>Slug</th><td>{{ $region->slug }}</td>
             </tr>
             </tbody>
         </table>
 
-        <a href="{{ route('admin.regions.create', ['parent' => $region->id]) }}" class="btn btn-success mb-3">Add region</a>
+        <p><a href="{{ route('admin.regions.create', ['parent' => $region->id]) }}" class="btn btn-success">Add SubRegion</a></p>
 
-        @if(count($regions))
-            @include('admin.regions._list')
-        @endif
+        @include('admin.regions._list', ['regions' => $regions])
     </div>
 @endsection

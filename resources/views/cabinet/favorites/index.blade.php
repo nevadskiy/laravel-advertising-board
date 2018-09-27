@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        @include('cabinet.adverts._nav')
+        @include('cabinet.favorites._nav')
 
         <table class="table table-striped">
             <thead>
@@ -12,7 +12,7 @@
                 <th>Title</th>
                 <th>Region</th>
                 <th>Category</th>
-                <th>Status</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -29,15 +29,11 @@
                     </td>
                     <td>{{ $advert->category->name }}</td>
                     <td>
-                        @if ($advert->isDraft())
-                            <span class="badge badge-secondary">Draft</span>
-                        @elseif ($advert->isOnModeration())
-                            <span class="badge badge-primary">Moderation</span>
-                        @elseif ($advert->isActive())
-                            <span class="badge badge-primary">Active</span>
-                        @elseif ($advert->isClosed())
-                            <span class="badge badge-secondary">Closed</span>
-                        @endif
+                        <form method="POST" action="{{ route('cabinet.favorites.remove', $advert) }}" class="mr-1">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-danger"><span class="fa fa-remove"></span> Remove</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach

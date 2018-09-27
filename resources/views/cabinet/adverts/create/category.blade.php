@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('cabinet._nav')
-
     <div class="container">
+        @include('cabinet.adverts._nav')
+
         <p>Choose category:</p>
 
-        @include('cabinet.adverts.create._categories', compact('categories'))
+        @include('cabinet.adverts.create._categories', ['categories' => $categories])
     </div>
 @endsection

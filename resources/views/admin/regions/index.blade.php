@@ -4,10 +4,8 @@
     <div class="container">
         @include('admin.regions._nav')
 
-        <a href="{{ route('admin.regions.create') }}" class="btn btn-success mb-3">Add region</a>
+        <p><a href="{{ route('admin.regions.create') }}" class="btn btn-success">Add Region</a></p>
 
-        @include('admin.regions._list')
-
-        {{ $regions->links() }}
+        @include('admin.regions._list', ['regions' => $regions])
     </div>
 @endsection

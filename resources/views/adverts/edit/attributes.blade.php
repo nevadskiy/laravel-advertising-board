@@ -1,88 +1,45 @@
-<div class="card mb-3">
-    <div class="card-header">Characteristics</div>
-    <div class="card-body pb-2">
-        @foreach ($category->allAttributes() as $attribute)
-            <div class="form-group">
-                <label for="attribute_{{ $attribute->id  }}" class="col-form-label">{{ $attribute->name }}</label>
-
-                @if ($attribute->isSelect())
-                    <select
-                            id="attribute_{{ $attribute->id }}"
-                            name="attributes[{{ $attribute->id }}]"
-                            class="form-control{{ $errors->has('attributes.' . $attribute->id) ? ' is-invalid' : '' }}"
-                    >
-                        @foreach ($attribute->variants as $variant)
-                            <option value="{{ $variant }}"{{ $variant == old('addtibutes.' . $attribute->id) ? ' selected' : '' }}>
-                                {{ $variant }}
-                            </option>
-                        @endforeach
-                    </select>
-                @else
-                    <input
-                            type="{{ $attribute->isNumber() ? 'text' : 'number' }}"
-                            id="attributete_{{ $attribute->id }}"
-                            name="attributes[{{ $attribute->id }}]"
-                            value="{{ old('attributes.' . $attribute->id) }}"
-                    >
-                @endif
-
-                @if ($errors->has('parent'))
-                    <span class="invalid-feedback">
-                                    <strong>{{ $errors->first('attributes.' . $attribute->id) }}</strong>
-                                </span>
-                @endif
-            </div>
-        @endforeach
-    </div>
-</div>
-
 @extends('layouts.app')
 
 @section('content')
     <div class="container">
-        <form action="?" method="POST" enctype="multipart/form-data">
+        <form method="POST" action="?">
             @csrf
 
-            <div class="card mb-3">
-                <div class="card-header">Characteristics</div>
-                <div class="card-body pb-2">
-                    @foreach ($category->allAttributes() as $attribute)
-                        <div class="form-group">
-                            <label for="attribute_{{ $attribute->id  }}" class="col-form-label">{{ $attribute->name }}</label>
+            @foreach ($advert->category->allAttributes() as $attribute)
 
-                            @if ($attribute->isSelect())
-                                <select
-                                        id="attribute_{{ $attribute->id }}"
-                                        name="attributes[{{ $attribute->id }}]"
-                                        class="form-control{{ $errors->has('attributes.' . $attribute->id) ? ' is-invalid' : '' }}"
-                                >
-                                    @foreach ($attribute->variants as $variant)
-                                        <option value="{{ $variant }}"{{ $variant == old('addtibutes.' . $attribute->id) ? ' selected' : '' }}>
-                                            {{ $variant }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            @else
-                                <input
-                                        type="{{ $attribute->isNumber() ? 'text' : 'number' }}"
-                                        id="attributete_{{ $attribute->id }}"
-                                        name="attributes[{{ $attribute->id }}]"
-                                        value="{{ old('attributes.' . $attribute->id) }}"
-                                >
-                            @endif
+                <div class="form-group">
+                    <label for=attribute_{{ $attribute->id }}" class="col-form-label">{{ $attribute->name }}</label>
 
-                            @if ($errors->has('parent'))
-                                <span class="invalid-feedback">
-                                    <strong>{{ $errors->first('attributes.' . $attribute->id) }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    @endforeach
+                    @if ($attribute->isSelect())
+
+                        <select id="attribute_{{ $attribute->id }}" class="form-control{{ $errors->has('attributes.' . $attribute->id) ? ' is-invalid' : '' }}" name="attributes[{{ $attribute->id }}]">
+                            <option value=""></option>
+                            @foreach ($attribute->variants as $variant)
+                                <option value="{{ $variant }}"{{ $variant == old('attributes.' . $attribute->id, $advert->getValue($attribute->id)) ? ' selected' : '' }}>
+                                    {{ $variant }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                    @elseif ($attribute->isNumber())
+
+                        <input id="attribute_{{ $attribute->id }}" type="number" class="form-control{{ $errors->has('attributes.' . $attribute->id) ? ' is-invalid' : '' }}" name="attributes[{{ $attribute->id }}]" value="{{ old('attributes.' . $attribute->id, $advert->getValue($attribute->id)) }}">
+
+                    @else
+
+                        <input id="attribute_{{ $attribute->id }}" type="text" class="form-control{{ $errors->has('attributes.' . $attribute->id) ? ' is-invalid' : '' }}" name="attributes[{{ $attribute->id }}]" value="{{ old('attributes.' . $attribute->id, $advert->getValue($attribute->id)) }}">
+
+                    @endif
+
+                    @if ($errors->has('parent'))
+                        <span class="invalid-feedback"><strong>{{ $errors->first('attributes.' . $attribute->id) }}</strong></span>
+                    @endif
                 </div>
-            </div>
+
+            @endforeach
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Upload</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
     </div>

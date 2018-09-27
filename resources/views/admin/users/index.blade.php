@@ -4,7 +4,7 @@
     <div class="container">
         @include('admin.users._nav')
 
-        <a href="{{ route('admin.users.create') }}" class="btn btn-success mb-3">Add User</a>
+        <p><a href="{{ route('admin.users.create') }}" class="btn btn-success">Add User</a></p>
 
         <div class="card mb-3">
             <div class="card-header">Filter</div>
@@ -14,50 +14,46 @@
                         <div class="col-sm-1">
                             <div class="form-group">
                                 <label for="id" class="col-form-label">ID</label>
-                                <input id="id" name="id" class="form-control" value="{{ request('id') }}">
+                                <input id="id" class="form-control" name="id" value="{{ request('id') }}">
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label for="name" class="col-form-label">Name</label>
-                                <input id="name" name="name" class="form-control" value="{{ request('name') }}">
+                                <input id="name" class="form-control" name="name" value="{{ request('name') }}">
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="email" class="col-form-label">Email</label>
-                                <input id="email" name="email" class="form-control" value="{{ request('email') }}">
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label for="status" class="col-form-label">Role</label>
-                                <select id="status" name="status" class="form-control">
-                                    <option value=""></option>
-                                    @foreach ($roles as $value => $label)
-                                        <option value="{{ $value }}"{{ $value === request('status') ? ' selected' : '' }}>
-                                            {{ $label }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <input id="email" class="form-control" name="email" value="{{ request('email') }}">
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label for="status" class="col-form-label">Status</label>
-                                <select id="status" name="status" class="form-control">
+                                <select id="status" class="form-control" name="status">
                                     <option value=""></option>
                                     @foreach ($statuses as $value => $label)
-                                        <option value="{{ $value }}"{{ $value === request('status') ? ' selected' : '' }}>
-                                            {{ $label }}
-                                        </option>
-                                    @endforeach
+                                        <option value="{{ $value }}"{{ $value === request('status') ? ' selected' : '' }}>{{ $label }}</option>
+                                    @endforeach;
                                 </select>
                             </div>
                         </div>
-                        <div class="col-ms-2">
+                        <div class="col-sm-2">
                             <div class="form-group">
-                                <label class="col-form-label">&nbsp;</label><br>
+                                <label for="role" class="col-form-label">Role</label>
+                                <select id="role" class="form-control" name="role">
+                                    <option value=""></option>
+                                    @foreach ($roles as $value => $label)
+                                        <option value="{{ $value }}"{{ $value === request('role') ? ' selected' : '' }}>{{ $label }}</option>
+                                    @endforeach;
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label class="col-form-label">&nbsp;</label><br />
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
                         </div>
@@ -77,6 +73,7 @@
             </tr>
             </thead>
             <tbody>
+
             @foreach ($users as $user)
                 <tr>
                     <td>{{ $user->id }}</td>
@@ -85,19 +82,21 @@
                     <td>
                         @if ($user->isWait())
                             <span class="badge badge-secondary">Waiting</span>
-                        @elseif ($user->isActive())
+                        @endif
+                        @if ($user->isActive())
                             <span class="badge badge-primary">Active</span>
                         @endif
                     </td>
                     <td>
                         @if ($user->isAdmin())
-                            <span class="badge badge-secondary">Admin</span>
+                            <span class="badge badge-danger">Admin</span>
                         @else
-                            <span class="badge badge-primary">User</span>
+                            <span class="badge badge-secondary">User</span>
                         @endif
                     </td>
                 </tr>
             @endforeach
+
             </tbody>
         </table>
 
