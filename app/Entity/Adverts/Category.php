@@ -3,7 +3,6 @@
 namespace App\Entity\Adverts;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Kalnoy\Nestedset\NodeTrait;
 
 /**
@@ -14,38 +13,57 @@ use Kalnoy\Nestedset\NodeTrait;
  *
  * @property int $depth
  * @property Category $parent
- * @property Category $children
+ * @property Category[] $children
+ * @property Attribute[] $attributes
  */
 class Category extends Model
 {
     use NodeTrait;
 
+    /**
+     * @var string
+     */
     protected $table = 'advert_categories';
 
+    /**
+     * @var bool
+     */
     public $timestamps = false;
 
+    /**
+     * @var array
+     */
     protected $fillable = ['name', 'slug', 'parent_id'];
 
-    public function attributes()
+    /**
+     * @return string
+     */
+    public function getPath(): string
     {
-        return $this->hasMany(Attribute::class, 'category_id', 'id');
+        return implode('/', array_merge($this->ancestors()->defaultOrder()->pluck('slug')->toArray(), [$this->slug]));
     }
 
-    public function parentAttributes()
+    /**
+     * @return array
+     */
+    public function parentAttributes(): array
     {
-        return $this->parent ? $this->parent->allAttributes() : collect([]);
+        return $this->parent ? $this->parent->allAttributes() : [];
     }
 
     /**
      * @return Attribute[]
      */
-    public function allAttributes()
+    public function allAttributes(): array
     {
-        return $this->parentAttributes()->merge($this->attributes()->orderBy('sort')->get());
+        return array_merge($this->parentAttributes(), $this->attributes()->orderBy('sort')->getModels());
     }
 
-    public function getPath()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attributes()
     {
-        return implode('/', array_merge($this->ancestors()->defaultOrder()->pluck('slug')->toArray(), [$this->slug]));
+        return $this->hasMany(Attribute::class, 'category_id', 'id');
     }
 }

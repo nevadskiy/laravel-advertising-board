@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Router;
+namespace App\Http\Router;
 
 use App\Entity\Adverts\Category;
 use App\Entity\Region;
