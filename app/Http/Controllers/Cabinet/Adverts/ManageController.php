@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Cabinet\Adverts;
 
-use App\Entity\Adverts\Advert;
+use App\Entity\Advert\Advert;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\FilledProfileOnly;
-use App\Http\Requests\Adverts\AttributeRequest;
+use App\Http\Requests\Adverts\AttributesRequest;
 use App\Http\Requests\Adverts\PhotosRequest;
 use App\Services\Adverts\AdvertService;
 
@@ -26,7 +26,7 @@ class ManageController extends Controller
         return view('adverts.edit.attributes', compact('advert'));
     }
 
-    public function updateAttributes(AttributeRequest $request, Advert $advert)
+    public function updateAttributes(AttributesRequest $request, Advert $advert)
     {
         $this->checkAccess($advert);
 

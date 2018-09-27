@@ -1,8 +1,8 @@
 <?php
 
-use App\Entity\Adverts\Advert\Advert;
-use App\Entity\Adverts\Attribute;
-use App\Entity\Adverts\Category;
+use App\Entity\Advert\Advert\Advert;
+use App\Entity\Advert\Attribute;
+use App\Entity\Advert\Category;
 use App\Entity\Banner\Banner;
 use App\Entity\Region;
 use App\Entity\User;

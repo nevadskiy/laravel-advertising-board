@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands\Elastic;
 
-use App\Entity\Adverts\Advert;
+use App\Entity\Advert\Advert;
+use App\Entity\Banner\Banner;
 use App\Services\Search\AdvertIndexer;
+use App\Services\Search\BannerIndexer;
 use Elasticsearch\Client;
 use Illuminate\Console\Command;
 
@@ -34,16 +36,22 @@ class ReIndexCommand extends Command
     private $advertIndexer;
 
     /**
+     * @var BannerIndexer
+     */
+    private $bannerIndexer;
+
+    /**
      * Create a new command instance.
      *
      * @param Client $client
      * @param AdvertIndexer $advertIndexer
      */
-    public function __construct(Client $client, AdvertIndexer $advertIndexer)
+    public function __construct(Client $client, AdvertIndexer $advertIndexer, BannerIndexer $bannerIndexer)
     {
         parent::__construct();
         $this->client = $client;
         $this->advertIndexer = $advertIndexer;
+        $this->bannerIndexer = $bannerIndexer;
     }
 
     /**
@@ -61,6 +69,12 @@ class ReIndexCommand extends Command
 
         foreach (Advert::active()->orderBy('id')->cursor() as $advert) {
             $this->advertIndexer->index($advert);
+        }
+
+        $this->bannerIndexer->clear();
+
+        foreach (Banner::active()->orderBy('id')->cursor() as $banner) {
+            $this->banners->index($banner);
         }
 
         $this->info('--- Finish reindexing ---');

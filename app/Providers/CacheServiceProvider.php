@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Entity\Adverts\Category;
+use App\Entity\Advert\Category;
 use App\Entity\Region;
 use Cache;
 use Illuminate\Database\Eloquent\Model;

@@ -2,8 +2,8 @@
 
 namespace App\Services\Search;
 
-use App\Entity\Adverts\Advert;
-use App\Entity\Adverts\Value;
+use App\Entity\Advert\Advert;
+use App\Entity\Advert\Value;
 use Elasticsearch\Client;
 
 class AdvertIndexer

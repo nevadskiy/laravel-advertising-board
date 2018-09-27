@@ -11,6 +11,6 @@ class AdvertsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Entity\Adverts\Advert::class, 1000)->create();
+        factory(\App\Entity\Advert\Advert::class, 1000)->create();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cabinet\Adverts;
 
-use App\Entity\Adverts\Category;
+use App\Entity\Advert\Category;
 use App\Entity\Region;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\FilledProfileOnly;

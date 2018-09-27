@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Entity\Adverts;
+namespace App\Entity\Advert;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
+ * @property int $category_id
  * @property string $name
  * @property string $type
- * @property bool $required
+ * @property string $default
+ * @property boolean $required
  * @property array $variants
- * @property int $sort
+ * @property integer $sort
  */
 class Attribute extends Model
 {
@@ -25,7 +27,7 @@ class Attribute extends Model
     protected $fillable = ['name', 'type', 'required', 'default', 'variants', 'sort'];
 
     protected $casts = [
-        'variants' => 'array'
+        'variants' => 'array',
     ];
 
     public static function typesList(): array
@@ -33,7 +35,7 @@ class Attribute extends Model
         return [
             self::TYPE_STRING => 'String',
             self::TYPE_INTEGER => 'Integer',
-            self::TYPE_FLOAT => 'Float'
+            self::TYPE_FLOAT => 'Float',
         ];
     }
 

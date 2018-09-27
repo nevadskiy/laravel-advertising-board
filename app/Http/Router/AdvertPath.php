@@ -2,7 +2,7 @@
 
 namespace App\Http\Router;
 
-use App\Entity\Adverts\Category;
+use App\Entity\Advert\Category;
 use App\Entity\Region;
 use Cache;
 use Illuminate\Contracts\Routing\UrlRoutable;

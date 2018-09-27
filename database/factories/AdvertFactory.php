@@ -1,8 +1,8 @@
 <?php
 
-use App\Entity\Adverts\Advert;
-use App\Entity\Adverts\Category;
-use App\Entity\Adverts\Value;
+use App\Entity\Advert\Advert;
+use App\Entity\Advert\Category;
+use App\Entity\Advert\Value;
 use App\Entity\Region;
 use App\Entity\User;
 use Carbon\Carbon;
@@ -38,7 +38,7 @@ $factory->define(Advert::class, function (Faker $faker) {
 
 $factory->afterCreating(Advert::class, function (Advert $advert, Faker $faker) {
 
-    /** @var \App\Entity\Adverts\Attribute $attribute $attribute */
+    /** @var \App\Entity\Advert\Attribute $attribute $attribute */
     foreach ($advert->category->allAttributes() as $attribute) {
         if ($faker->boolean) {
             continue;

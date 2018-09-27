@@ -1,6 +1,6 @@
 <?php
 
-use App\Entity\Adverts\Category;
+use App\Entity\Advert\Category;
 
 class AdvertCategoriesTableSeeder extends NestedTableSeeder
 {

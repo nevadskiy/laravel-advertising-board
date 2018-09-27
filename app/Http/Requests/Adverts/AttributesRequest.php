@@ -5,7 +5,7 @@ namespace App\Http\Requests\Adverts;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class AttributeRequest extends FormRequest
+class AttributesRequest extends FormRequest
 {
     public function authorize()
     {

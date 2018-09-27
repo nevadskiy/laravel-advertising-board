@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Adverts;
+namespace App\Entity\Advert;
 
 use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;

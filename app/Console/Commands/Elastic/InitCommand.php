@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Elastic;
 
-use App\Entity\Adverts\Advert;
+use App\Entity\Advert\Advert;
 use App\Services\Search\AdvertIndexer;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
@@ -54,23 +54,43 @@ class InitCommand extends Command
      */
     public function handle()
     {
-        $this->removeCurrentIndic();
-        $this->createIndic();
+        $this->removeCurrentAdverts();
+        $this->removeCurrentBanners();
+        $this->initAdverts();
+        $this->initBanners();
     }
 
-    protected function removeCurrentIndic(): void
+    /**
+     *
+     */
+    protected function removeCurrentAdverts(): void
     {
         try {
             $this->client->indices()->delete([
-                'index' => 'app',
+                'index' => 'adverts'
             ]);
         } catch (Missing404Exception $e) {}
     }
 
-    protected function createIndic(): void
+    /**
+     *
+     */
+    protected function removeCurrentBanners(): void
+    {
+        try {
+            $this->client->indices()->delete([
+                'index' => 'banners'
+            ]);
+        } catch (Missing404Exception $e) {}
+    }
+
+    /**
+     *
+     */
+    private function initAdverts(): void
     {
         $this->client->indices()->create([
-            'index' => 'app',
+            'index' => 'advert',
 
             'body' => [
                 // Mapping table entities
@@ -186,6 +206,42 @@ class InitCommand extends Command
                                     'word_delimiter', // name of filter (defined above inside settings.filter key)
                                     'trigrams'
                                 ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     *
+     */
+    private function initBanners(): void
+    {
+        $this->client->indices()->create([
+            'index' => 'banners',
+            'body' => [
+                'mappings' => [
+                    'banner' => [
+                        '_source' => [
+                            'enabled' => true,
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => 'integer',
+                            ],
+                            'status' => [
+                                'type' => 'keyword',
+                            ],
+                            'format' => [
+                                'type' => 'keyword',
+                            ],
+                            'categories' => [
+                                'type' => 'integer',
+                            ],
+                            'regions' => [
+                                'type' => 'integer',
                             ],
                         ],
                     ],

@@ -2,8 +2,8 @@
 
 namespace App\Services\Adverts;
 
-use App\Entity\Adverts\Advert;
-use App\Entity\Adverts\Category;
+use App\Entity\Advert\Advert;
+use App\Entity\Advert\Category;
 use App\Entity\Region;
 use App\Http\Requests\Adverts\SearchRequest;
 use Elasticsearch\Client;

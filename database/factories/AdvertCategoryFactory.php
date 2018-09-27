@@ -1,6 +1,6 @@
 <?php
 
-use App\Entity\Adverts\Category;
+use App\Entity\Advert\Category;
 use Faker\Generator as Faker;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
