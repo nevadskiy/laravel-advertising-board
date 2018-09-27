@@ -7,17 +7,20 @@ use Illuminate\Validation\Rule;
 
 class CreateRequest extends FormRequest
 {
+    /**
+     * @return bool
+     */
     public function authorize()
     {
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         $items = [];
-
-        // $this - request context
-        // $request->category - route binding
 
         foreach ($this->category->allAttributes() as $attribute) {
             $rules = [

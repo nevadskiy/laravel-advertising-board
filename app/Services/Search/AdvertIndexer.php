@@ -13,16 +13,23 @@ class AdvertIndexer
      */
     private $client;
 
+    /**
+     * AdvertIndexer constructor.
+     * @param Client $client
+     */
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
+    /**
+     *
+     */
     public function clear(): void
     {
         $this->client->deleteByQuery([
-            'index' => 'app',
-            'type' => 'adverts',
+            'index' => 'adverts',
+            'type' => 'advert',
             'body' => [
                 'query' => [
                     // where match_all = {}
@@ -33,6 +40,9 @@ class AdvertIndexer
         ]);
     }
 
+    /**
+     * @param Advert $advert
+     */
     public function index(Advert $advert): void
     {
         // Add regions
@@ -44,8 +54,8 @@ class AdvertIndexer
         }
 
         $this->client->index([
-            'index' => 'app',
-            'type' => 'adverts',
+            'index' => 'adverts',
+            'type' => 'advert',
             'id' => $advert->id,
             'body' => [
                 'id' => $advert->id,
@@ -71,11 +81,14 @@ class AdvertIndexer
         ]);
     }
 
+    /**
+     * @param Advert $advert
+     */
     public function remove(Advert $advert): void
     {
         $this->client->delete([
-            'index' => 'app',
-            'type' => 'adverts',
+            'index' => 'adverts',
+            'type' => 'advert',
             'id' => $advert->id
         ]);
     }

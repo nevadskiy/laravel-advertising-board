@@ -16,6 +16,14 @@ use Illuminate\Support\Facades\DB;
 
 class AdvertService
 {
+    /**
+     * @param $userId
+     * @param $categoryId
+     * @param $regionId
+     * @param CreateRequest $request
+     * @return Advert
+     * @throws \Throwable
+     */
     public function create($userId, $categoryId, $regionId, CreateRequest $request): Advert
     {
         /** @var User $user */
@@ -56,6 +64,11 @@ class AdvertService
         });
     }
 
+    /**
+     * @param $id
+     * @param PhotosRequest $request
+     * @throws \Throwable
+     */
     public function addPhotos($id, PhotosRequest $request): void
     {
         $advert = $this->getAdvert($id);
@@ -70,6 +83,10 @@ class AdvertService
         });
     }
 
+    /**
+     * @param $id
+     * @param EditRequest $request
+     */
     public function edit($id, EditRequest $request): void
     {
         $advert = $this->getAdvert($id);
@@ -81,24 +98,39 @@ class AdvertService
         ]));
     }
 
+    /**
+     * @param $id
+     */
     public function sendToModeration($id): void
     {
         $advert = $this->getAdvert($id);
         $advert->sendToModeration();
     }
 
+    /**
+     * @param $id
+     */
     public function moderate($id): void
     {
         $advert = $this->getAdvert($id);
         $advert->moderate(Carbon::now());
     }
 
+    /**
+     * @param $id
+     * @param RejectRequest $request
+     */
     public function reject($id, RejectRequest $request): void
     {
         $advert = $this->getAdvert($id);
         $advert->reject($request['reason']);
     }
 
+    /**
+     * @param $id
+     * @param AttributesRequest $request
+     * @throws \Throwable
+     */
     public function editAttributes($id, AttributesRequest $request): void
     {
         $advert = $this->getAdvert($id);
@@ -118,23 +150,37 @@ class AdvertService
         });
     }
 
+    /**
+     * @param Advert $advert
+     */
     public function expire(Advert $advert): void
     {
         $advert->expire();
     }
 
+    /**
+     * @param $id
+     */
     public function close($id): void
     {
         $advert = $this->getAdvert($id);
         $advert->close();
     }
 
+    /**
+     * @param $id
+     * @throws \Exception
+     */
     public function remove($id): void
     {
         $advert = $this->getAdvert($id);
         $advert->delete();
     }
 
+    /**
+     * @param $id
+     * @return Advert
+     */
     private function getAdvert($id): Advert
     {
         return Advert::findOrFail($id);

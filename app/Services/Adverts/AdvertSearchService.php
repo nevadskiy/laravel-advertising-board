@@ -47,8 +47,8 @@ class AdvertSearchService
         });
 
         $request = [
-            'index' => 'app',
-            'type' => 'adverts',
+            'index' => 'adverts',
+            'type' => 'advert',
             'body' => [
                 // Array to return
                 '_source' => ['id'],

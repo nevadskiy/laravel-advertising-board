@@ -7,11 +7,17 @@ use Illuminate\Validation\Rule;
 
 class AttributesRequest extends FormRequest
 {
+    /**
+     * @return bool
+     */
     public function authorize()
     {
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         $items = [];

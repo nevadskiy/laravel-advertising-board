@@ -90,7 +90,7 @@ class InitCommand extends Command
     private function initAdverts(): void
     {
         $this->client->indices()->create([
-            'index' => 'advert',
+            'index' => 'adverts',
 
             'body' => [
                 // Mapping table entities

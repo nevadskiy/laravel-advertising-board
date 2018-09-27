@@ -3,18 +3,14 @@
 namespace App\Services\Adverts;
 
 use App\Entity\Advert\Advert;
-use App\Entity\Advert\Category;
-use App\Entity\Region;
-use App\Http\Requests\Adverts\AttributesRequest;
-use App\Http\Requests\Adverts\CreateRequest;
 use App\Entity\User;
-use App\Http\Requests\Adverts\PhotosRequest;
-use App\Http\Requests\Adverts\RejectRequest;
-use Carbon\Carbon;
-use DB;
 
 class FavoriteService
 {
+    /**
+     * @param int $userId
+     * @param int $advertId
+     */
     public function add(int $userId, int $advertId): void
     {
         $user = $this->getUser($userId);
@@ -23,6 +19,10 @@ class FavoriteService
         $user->addToFavorites($advert);
     }
 
+    /**
+     * @param int $userId
+     * @param int $advertId
+     */
     public function remove(int $userId, int $advertId): void
     {
         $user = $this->getUser($userId);
@@ -31,11 +31,19 @@ class FavoriteService
         $user->removeFromFavorites($advert->id);
     }
 
+    /**
+     * @param int $userId
+     * @return User
+     */
     private function getUser(int $userId): User
     {
         return User::findOrFail($userId);
     }
 
+    /**
+     * @param int $advertId
+     * @return Advert
+     */
     private function getAdvert(int $advertId): Advert
     {
         return Advert::findOrFaild($advertId);
