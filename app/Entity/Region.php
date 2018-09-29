@@ -15,30 +15,52 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Region extends Model
 {
+    /**
+     * @var array
+     */
     protected $fillable = ['name', 'slug', 'parent_id'];
 
+    /**
+     * @var bool
+     */
     public $timestamps = false;
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function children()
     {
         return $this->hasMany(static::class, 'parent_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function parent()
     {
         return $this->belongsTo(static::class, 'parent_id', 'id');
     }
 
+    /**
+     * @return string
+     */
     public function getAddress(): string
     {
         return ($this->parent ? $this->parent->getAddress() . ', ' : '') . $this->name;
     }
 
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
     public function scopeRoot(Builder $query)
     {
         return $query->where('parent_id', null);
     }
 
+    /**
+     * @return string
+     */
     public function getPath()
     {
         return ($this->parent ? $this->parent->getPath() . '/' : '') . $this->slug;

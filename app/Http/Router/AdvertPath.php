@@ -57,21 +57,18 @@ class AdvertPath implements UrlRoutable
     public function getRouteKey()
     {
         $segments = [];
-
         if ($this->region) {
             $segments[] = Cache::tags(Region::class)
-                ->rememberForever('region:' . $this->region->id, function () {
+                ->rememberForever('region_path_' . $this->region->id, function () {
                     return $this->region->getPath();
                 });
         }
-
         if ($this->category) {
             $segments[] = Cache::tags(Category::class)
-                ->rememberForever('category:' . $this->region->id, function () {
+                ->rememberForever('category_path_' . $this->category->id, function () {
                     return $this->category->getPath();
                 });
         }
-
         return implode('/', $segments);
     }
 

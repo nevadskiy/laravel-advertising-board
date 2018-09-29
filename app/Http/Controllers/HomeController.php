@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Entity\Advert\Category;
 use App\Entity\Region;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {

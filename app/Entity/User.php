@@ -27,30 +27,60 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    /**
+     *
+     */
     public const STATUS_WAIT = 'wait';
+    /**
+     *
+     */
     public const STATUS_ACTIVE = 'active';
 
+    /**
+     *
+     */
     public const ROLE_USER = 'user';
+    /**
+     *
+     */
     public const ROLE_ADMIN = 'admin';
+    /**
+     *
+     */
     public const ROLE_MODERATOR = 'moderator';
 
+    /**
+     * @var array
+     */
     protected $fillable = [
         'name', 'last_name', 'email', 'phone', 'password', 'status', 'verify_token', 'role'
     ];
 
+    /**
+     * @var array
+     */
     protected $hidden = [
         'password', 'remember_token', 'verify_token', 'status', 'role'
     ];
 
+    /**
+     * @var array
+     */
     protected $casts = [
         'phone_verified' => 'boolean',
         'phone_auth' => 'boolean'
     ];
 
+    /**
+     * @var array
+     */
     protected $dates = [
         'phone_verify_token_expire'
     ];
 
+    /**
+     * @return array
+     */
     public static function rolesList(): array
     {
         return [
@@ -60,6 +90,12 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * @param string $name
+     * @param string $email
+     * @param string $password
+     * @return User
+     */
     public static function register(string $name, string $email, string $password): self
     {
         return static::create([
@@ -72,6 +108,11 @@ class User extends Authenticatable
         ]);
     }
 
+    /**
+     * @param string $name
+     * @param string $email
+     * @return User
+     */
     public static function generate(string $name, string $email): self
     {
         return static::create([
@@ -83,16 +124,25 @@ class User extends Authenticatable
         ]);
     }
 
+    /**
+     * @return bool
+     */
     public function isWait(): bool
     {
         return $this->status === self::STATUS_WAIT;
     }
 
+    /**
+     * @return bool
+     */
     public function isActive(): bool
     {
         return $this->status === self::STATUS_ACTIVE;
     }
 
+    /**
+     *
+     */
     public function verify(): void
     {
         if (!$this->isWait()) {
@@ -105,6 +155,9 @@ class User extends Authenticatable
         ]);
     }
 
+    /**
+     * @param $role
+     */
     public function changeRole($role): void
     {
         if (!\array_key_exists($role, self::rolesList())) {
@@ -118,16 +171,25 @@ class User extends Authenticatable
         $this->update(['role' => $role]);
     }
 
+    /**
+     * @return bool
+     */
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
     }
 
+    /**
+     * @return bool
+     */
     public function isModerator(): bool
     {
         return $this->role === self::ROLE_MODERATOR;
     }
 
+    /**
+     *
+     */
     public function unverifyPhone(): void
     {
         $this->phone_verified = false;
@@ -136,6 +198,11 @@ class User extends Authenticatable
         $this->save();
     }
 
+    /**
+     * @param Carbon $time
+     * @return string
+     * @throws \Exception
+     */
     public function requestPhoneVerification(Carbon $time): string
     {
         if (empty($this->phone)) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\Banners;
+namespace App\Services\Banners;
 
 use App\Entity\Advert\Category;
 use App\Entity\Banner\Banner;

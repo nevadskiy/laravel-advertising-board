@@ -2,22 +2,36 @@
 
 namespace App\Http\Controllers\Cabinet;
 
-use Auth;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
-        return view('cabinet.profile.home', ['user' => Auth::user()]);
+        $user = Auth::user();
+
+        return view('cabinet.profile.home', compact('user'));
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit()
     {
-        return view('cabinet.profile.edit', ['user' => Auth::user()]);
+        $user = Auth::user();
+
+        return view('cabinet.profile.edit', compact('user'));
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request)
     {
         $this->validate($request, [
@@ -30,7 +44,7 @@ class ProfileController extends Controller
 
         $oldPhone = $user->phone;
 
-        $user->update($request->only(['name', 'last_name', 'phone']));
+        $user->update($request->only('name', 'last_name', 'phone'));
 
         if ($user->phone !== $oldPhone) {
             $user->unverifyPhone();

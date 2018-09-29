@@ -2,7 +2,7 @@
 
 use App\Entity\Advert\Category;
 use App\Entity\Region;
-use App\Router\AdvertPath;
+use App\Http\Router\AdvertPath;
 
 if (! function_exists('advert_path')) {
     /**
@@ -10,7 +10,7 @@ if (! function_exists('advert_path')) {
      * @param Category|null $category
      * @return AdvertPath
      */
-    function advert_path(?Region $region, ?Category $category)
+    function adverts_path(?Region $region, ?Category $category)
     {
         return app()->make(AdvertPath::class)
             ->withRegion($region)

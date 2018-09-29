@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Entity\Banner;
-use App\Entity\Region;
-use App\Entity\User;
+use App\Entity\Banner\Banner;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Banner\EditRequest;
 use App\Http\Requests\Banner\RejectRequest;
-use App\Services\Banner\BannerService;
-use DomainException;
+use App\Services\Banners\BannerService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class BannerController extends Controller
 {
@@ -29,6 +26,10 @@ class BannerController extends Controller
         $this->middleware('can:manage-banners');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Banner::orderByDesc('updated_at');
@@ -57,78 +58,111 @@ class BannerController extends Controller
 
         $statuses = Banner::statusesList();
 
-        $roles = User::rolesList();
-
-        return view('admin.banners.index', compact('banners', 'statuses', 'roles'));
+        return view('admin.banners.index', compact('banners', 'statuses'));
     }
 
+    /**
+     * @param Banner $banner
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show(Banner $banner)
     {
         return view('admin.banners.show', compact('banner'));
     }
 
+    /**
+     * @param Banner $banner
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function editForm(Banner $banner)
     {
         return view('admin.banners.edit', compact('banner'));
     }
 
+    /**
+     * @param EditRequest $request
+     * @param Banner $banner
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function edit(EditRequest $request, Banner $banner)
     {
         try {
             $this->service->editByAdmin($banner->id, $request);
-        } catch (DomainException $e) {
+        } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('admin.banners.edit', $banner);
+        return redirect()->route('admin.banners.show', $banner);
     }
 
+    /**
+     * @param Banner $banner
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function moderate(Banner $banner)
     {
         try {
             $this->service->moderate($banner->id);
-        } catch (DomainException $e) {
+        } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('admin.banners.edit', $banner);
+        return redirect()->route('admin.banners.show', $banner);
     }
 
+    /**
+     * @param Banner $banner
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function rejectForm(Banner $banner)
     {
         return view('admin.banners.reject', compact('banner'));
     }
 
+    /**
+     * @param RejectRequest $request
+     * @param Banner $banner
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function reject(RejectRequest $request, Banner $banner)
     {
         try {
             $this->service->reject($banner->id, $request);
-        } catch (DomainException $e) {
+        } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
 
         return redirect()->route('admin.banners.show', $banner);
     }
 
+    /**
+     * @param Banner $banner
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function pay(Banner $banner)
     {
         try {
             $this->service->pay($banner->id);
-        } catch (DomainException $e) {
+        } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
 
         return redirect()->route('admin.banners.show', $banner);
     }
 
+    /**
+     * @param Banner $banner
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function destroy(Banner $banner)
     {
         try {
             $this->service->removeByAdmin($banner->id);
-        } catch (DomainException $e) {
+        } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('admin.banners.show', $banner);
+        return redirect()->route('admin.banners.index');
     }
 }
