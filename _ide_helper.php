@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.6.38 on 2018-10-06 17:55:22.
+ * Generated for Laravel 5.6.39 on 2018-10-06 18:30:45.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -8893,7 +8893,7 @@ namespace Illuminate\Support\Facades {
          *  * _format request attribute
          *  * $default
          *
-         * @param string $default The default format
+         * @param string|null $default The default format
          * @return string The request format
          * @static 
          */ 
