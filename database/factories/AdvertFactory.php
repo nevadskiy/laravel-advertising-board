@@ -4,7 +4,7 @@ use App\Entity\Advert\Advert;
 use App\Entity\Advert\Category;
 use App\Entity\Advert\Value;
 use App\Entity\Region;
-use App\Entity\User;
+use App\Entity\User\User;
 use Carbon\Carbon;
 use Faker\Generator as Faker;
 

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Cabinet;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\User\ProfileEditRequest;
+use App\Services\User\ProfileService;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
@@ -29,26 +30,13 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param ProfileEditRequest $request
+     * @param ProfileService $service
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request)
+    public function update(ProfileEditRequest $request, ProfileService $service)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:255|regex:/^\d+$/s',
-        ]);
-
-        $user = Auth::user();
-
-        $oldPhone = $user->phone;
-
-        $user->update($request->only('name', 'last_name', 'phone'));
-
-        if ($user->phone !== $oldPhone) {
-            $user->unverifyPhone();
-        }
+        $service->edit(Auth::user(), $request);
 
         return redirect()->route('cabinet.profile.home');
     }

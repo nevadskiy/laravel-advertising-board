@@ -32,7 +32,7 @@ memory:
 	sudo sysctl -w vm.max_map_count=262144
 
 perm:
-# TODO:	sudo chown ${USER}:${USER} . -R (only php files, exclude docker directory)
+	sudo chown ${USER}:${USER} app -R
 	sudo chmod -R 777 bootstrap/cache
 	sudo chmod -R 777 storage
 	sudo chown ${USER}:${USER} bootstrap/cache -R

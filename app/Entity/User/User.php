@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\User;
 
 use App\Entity\Advert\Advert;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Str;
+use Laravel\Passport\HasApiTokens;
 
 /**
  * @property int $id
@@ -25,42 +27,37 @@ use Illuminate\Support\Str;
  */
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasApiTokens;
 
-    /**
-     *
-     */
     public const STATUS_WAIT = 'wait';
-    /**
-     *
-     */
     public const STATUS_ACTIVE = 'active';
-
-    /**
-     *
-     */
     public const ROLE_USER = 'user';
-    /**
-     *
-     */
     public const ROLE_ADMIN = 'admin';
-    /**
-     *
-     */
     public const ROLE_MODERATOR = 'moderator';
 
     /**
      * @var array
      */
     protected $fillable = [
-        'name', 'last_name', 'email', 'phone', 'password', 'status', 'verify_token', 'role'
+        'name',
+        'last_name',
+        'email',
+        'phone',
+        'password',
+        'status',
+        'verify_token',
+        'role',
     ];
 
     /**
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'verify_token', 'status', 'role'
+        'password',
+        'remember_token',
+        'verify_token',
+        'status',
+        'role',
     ];
 
     /**
@@ -105,6 +102,42 @@ class User extends Authenticatable
             'verify_token' => Str::random(),
             'status' => self::STATUS_WAIT,
             'role' => self::ROLE_USER
+        ]);
+    }
+
+    static public function registerByNetwork(string $network, string $identity)
+    {
+        $user = static::create([
+            'name' => $identity,
+            'email' => null,
+            'password' => null,
+            'verify_token' => null,
+            'role' => self::ROLE_USER,
+            'status' => self::STATUS_ACTIVE,
+        ]);
+
+        $user->networks()->create([
+            'network' => $network,
+            'identity' => $identity,
+        ]);
+
+        return $user;
+    }
+
+    public function attachNetwork(string $network, string $identity): void
+    {
+        $exists = $this->networks()->where([
+            'network' => $network,
+            'identity' => $identity
+        ])->exists();
+
+        if ($exists) {
+            throw new \DomainException('Network already attached');
+        }
+
+        $this->networks()->create([
+            'network' => $network,
+            'identity' => $identity
         ]);
     }
 
@@ -290,5 +323,22 @@ class User extends Authenticatable
         }
 
         $this->favorites()->detach($id);
+    }
+
+    public function networks()
+    {
+        return $this->hasMany(Network::class, 'user_id', 'id');
+    }
+
+    public function scopeByNetwork(Builder $query, string $network, string $identity): Builder
+    {
+        return $query->whereHas('networks', function (Builder $query) use ($network, $identity) {
+            $query->where('network', $network)->where('identity', $identity);
+        });
+    }
+
+    public function findForPassport($identifier)
+    {
+        return self::where('email', $identifier)->where('status', self::STATUS_ACTIVE)->first();
     }
 }

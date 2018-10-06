@@ -3,7 +3,7 @@
 namespace App\Services\Auth;
 
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Entity\User;
+use App\Entity\User\User;
 use App\Mail\VerifyEmail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Events\Dispatcher;

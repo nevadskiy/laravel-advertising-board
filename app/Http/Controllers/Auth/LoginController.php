@@ -7,7 +7,7 @@ use App\Services\Sms\SmsSender;
 use Auth;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use App\Http\Controllers\Controller;
-use App\Entity\User;
+use App\Entity\User\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;

@@ -4,7 +4,7 @@ namespace App\Entity\Banner;
 
 use App\Entity\Advert\Category;
 use App\Entity\Region;
-use App\Entity\User;
+use App\Entity\User\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -61,7 +61,7 @@ class Banner extends Model
     /**
      * @var string
      */
-    protected $table = 'banner_banners';
+    protected $table = 'banners';
 
     /**
      * @var array

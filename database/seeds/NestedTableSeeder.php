@@ -70,12 +70,12 @@ class NestedTableSeeder extends Seeder
             return $level;
         }
 
-        return $level->each(function ($category) use ($depthLeft, $level) {
-            if (!$category instanceof $this->model) {
+        return $level->each(function ($model) use ($depthLeft, $level) {
+            if (!$model instanceof $this->model) {
                 throw new LogicException('Wrong model is set for nested seeder');
             }
 
-            $category->{$this->childRelation}()->saveMany(
+            $model->{$this->childRelation}()->saveMany(
                 $level = $this->seedLevel()
             );
 
