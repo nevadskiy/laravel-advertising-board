@@ -7,7 +7,7 @@ use App\Entity\Advert\Category;
 use App\Entity\Region;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Adverts\SearchRequest;
-use App\Router\AdvertPath;
+use App\Http\Router\AdvertPath;
 use App\Services\Adverts\AdvertSearchService;
 use Gate;
 

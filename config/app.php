@@ -163,6 +163,7 @@ return [
         App\Providers\SmsServiceProvider::class,
         App\Providers\CacheServiceProvider::class,
         App\Providers\ElasticSearchProvider::class,
+        App\Providers\ViewComposerServiceProvider::class,
 
     ],
 

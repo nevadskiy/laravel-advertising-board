@@ -48,7 +48,7 @@
 
             <div class="form-group">
                 <label for="content" class="col-form-label">Content</label>
-                <textarea id="content" class="form-control{{ $errors->has('content') ? ' is-invalid' : '' }}" name="content" rows="10" required>{{ old('content') }}</textarea>
+                <textarea id="content" data-image-url="{{ route('admin.ajax.upload.image') }}" class="summernote form-control{{ $errors->has('content') ? ' is-invalid' : '' }}" name="content" rows="10" required>{{ old('content') }}</textarea>
                 @if ($errors->has('content'))
                     <span class="invalid-feedback"><strong>{{ $errors->first('content') }}</strong></span>
                 @endif

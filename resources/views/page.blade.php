@@ -14,6 +14,6 @@
                 @endforeach
             </ul>
         @endif
-        {!! nl2br(e($page->content)) !!}
+        {!! clean($page->content) !!}
     </div>
 @endsection
