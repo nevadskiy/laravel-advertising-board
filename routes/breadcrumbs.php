@@ -84,6 +84,24 @@ Breadcrumbs::register('adverts.show', function (Crumbs $crumbs, Advert $advert) 
     $crumbs->push($advert->title, route('adverts.show', $advert));
 });
 
+// Tickets
+
+Breadcrumbs::register('admin.tickets.index', function (Crumbs $crumbs) {
+    $crumbs->parent('admin.home');
+    $crumbs->push('Tickets', route('admin.tickets.index'));
+});
+
+Breadcrumbs::register('admin.tickets.show', function (Crumbs $crumbs, Ticket $ticket) {
+    $crumbs->parent('admin.tickets.index');
+    $crumbs->push($ticket->subject, route('admin.tickets.show', $ticket));
+});
+
+Breadcrumbs::register('admin.tickets.edit', function (Crumbs $crumbs, Ticket $ticket) {
+    $crumbs->parent('admin.tickets.show', $ticket);
+    $crumbs->push('Edit', route('admin.tickets.edit', $ticket));
+});
+
+
 // Cabinet
 
 Breadcrumbs::register('cabinet.home', function (Crumbs $crumbs) {
@@ -196,6 +214,23 @@ Breadcrumbs::register('cabinet.banners.create.region', function (Crumbs $crumbs,
 Breadcrumbs::register('cabinet.banners.create.banner', function (Crumbs $crumbs, Category $category, Region $region = null) {
     $crumbs->parent('cabinet.banners.create.region', $category, $region);
     $crumbs->push($region ? $region->name : 'All', route('cabinet.banners.create.banner', [$category, $region]));
+});
+
+// Cabinet Tickets
+
+Breadcrumbs::register('cabinet.tickets.index', function (Crumbs $crumbs) {
+    $crumbs->parent('cabinet.home');
+    $crumbs->push('Tickets', route('cabinet.tickets.index'));
+});
+
+Breadcrumbs::register('cabinet.tickets.create', function (Crumbs $crumbs) {
+    $crumbs->parent('cabinet.tickets.index');
+    $crumbs->push('Create', route('cabinet.tickets.create'));
+});
+
+Breadcrumbs::register('cabinet.tickets.show', function (Crumbs $crumbs, Ticket $ticket) {
+    $crumbs->parent('cabinet.tickets.index');
+    $crumbs->push($ticket->subject, route('cabinet.tickets.show', $ticket));
 });
 
 // Admin

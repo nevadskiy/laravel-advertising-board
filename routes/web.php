@@ -51,6 +51,9 @@ Route::group([
         Route::post('phone/auth', 'PhoneController@auth')->name('phone.auth');
     });
 
+    Route::resource('tickets', 'TicketController')->only(['index', 'show', 'create', 'store', 'destroy']);
+    Route::post('tickets/{ticket}/message', 'TicketController@message')->name('tickets.message');
+
     /** Favorites */
     Route::group(['prefix' => 'favorites', 'as' => 'favorites.'], function () {
         Route::get('/', 'FavoriteController@index')->name('index');
@@ -174,7 +177,9 @@ Route::group([
         'as' => 'banners.'
     ], function () {
         Route::get('/', 'BannerController@index')->name('index');
-        Route::group(['prefix' => '{banner}'], function () {
+        Route::group([
+            'prefix' => '{banner}'
+        ], function () {
             Route::get('show', 'BannerController@show')->name('show');
             Route::get('edit', 'BannerController@editForm')->name('edit');
             Route::put('edit', 'BannerController@edit');
@@ -184,6 +189,21 @@ Route::group([
             Route::post('pay', 'BannerController@pay')->name('pay');
             Route::delete('destroy', 'BannerController@destroy')->name('destroy');
         });
+    });
+
+    Route::group([
+        'prefix' => 'tickets',
+        'as' => 'tickets.'
+    ], function () {
+        Route::get('/', 'TicketController@index')->name('index');
+        Route::get('/{ticket}/show', 'TicketController@show')->name('show');
+        Route::get('/{ticket}/edit', 'TicketController@editForm')->name('edit');
+        Route::put('/{ticket}/edit', 'TicketController@edit');
+        Route::post('{ticket}/message', 'TicketController@message')->name('message');
+        Route::post('/{ticket}/close', 'TicketController@close')->name('close');
+        Route::post('/{ticket}/approve', 'TicketController@approve')->name('approve');
+        Route::post('/{ticket}/reopen', 'TicketController@reopen')->name('reopen');
+        Route::delete('/{ticket}/destroy', 'TicketController@destroy')->name('destroy');
     });
 });
 
