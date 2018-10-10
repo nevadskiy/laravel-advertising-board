@@ -11,6 +11,7 @@ use App\Http\Requests\Adverts\CreateRequest;
 use App\Http\Requests\Adverts\EditRequest;
 use App\Http\Requests\Adverts\PhotosRequest;
 use App\Http\Requests\Adverts\RejectRequest;
+use App\Notifications\Advert\ModerationPassedNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -114,6 +115,8 @@ class AdvertService
     {
         $advert = $this->getAdvert($id);
         $advert->moderate(Carbon::now());
+
+        $advert->user->notify(new ModerationPassedNotification($advert));
     }
 
     /**
