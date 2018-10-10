@@ -6,6 +6,7 @@ use App\Entity\Advert\Advert;
 use App\Entity\Advert\Category;
 use App\Entity\Region;
 use App\Entity\User\User;
+use App\Events\ModerationPassed;
 use App\Http\Requests\Adverts\AttributesRequest;
 use App\Http\Requests\Adverts\CreateRequest;
 use App\Http\Requests\Adverts\EditRequest;
@@ -116,7 +117,7 @@ class AdvertService
         $advert = $this->getAdvert($id);
         $advert->moderate(Carbon::now());
 
-        $advert->user->notify(new ModerationPassedNotification($advert));
+        event(new ModerationPassed($advert));
     }
 
     /**

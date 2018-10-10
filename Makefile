@@ -27,6 +27,9 @@ assets:
 watch:
 	docker-compose exec node yarn watch
 
+queue:
+	docker-compose exec php-cli php artisan queue:work
+
 # Memory for virtual container (Elasticsearch depends on it)
 memory:
 	sudo sysctl -w vm.max_map_count=262144
