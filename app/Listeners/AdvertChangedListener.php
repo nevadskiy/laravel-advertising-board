@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Jobs\ReindexAdvert;
 use App\Services\Search\AdvertIndexer;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,6 +18,6 @@ class AdvertChangedListener
 
     public function handle($event): void
     {
-        $this->indexer->index($event->advert);
+        ReindexAdvert::dispatch($event->advert);
     }
 }
