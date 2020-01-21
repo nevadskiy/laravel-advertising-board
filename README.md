@@ -1,1 +1,1 @@
-# laravel-ad
+# laravel-advertising-board
